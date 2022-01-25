@@ -1,0 +1,481 @@
+<!DOCTYPE html>
+
+<html lang="en">
+
+  <head>
+
+    <meta charset="UTF-8" />
+
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+
+    <link rel="stylesheet" href="../twilio.css" />
+
+    </head>
+
+  <body>
+
+    <h1>Single Variable Algebra Practice</h1><br>
+
+    <div id="problems"></div>
+
+    <div id="math"></div>
+
+    <div id="correct"></div>
+
+    <div id="time"></div>
+
+    <main>
+
+      <br><br>
+
+      <button id="button">Begin</button>
+
+      <div id="result"></div>
+
+      <p id="message" hidden aria-hidden="true">
+
+        Your browser doesn't support Speech Recognition. We recommend Chrome for Desktop or Android
+
+      </p>
+
+    </main>
+
+
+    
+
+    <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+
+    <script id="MathJax-script"
+
+            src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js">
+
+    </script>
+
+
+      
+
+      <script>
+
+      window.addEventListener("DOMContentLoaded", () => {
+
+        const button = document.getElementById("button");
+        
+        var timeInMs;
+
+        const math = document.getElementById("math");
+
+        const result = document.getElementById("result");
+
+        const main = document.getElementsByTagName("main")[0];
+
+        let listening = false;
+
+        const SpeechRecognition =
+
+          window.SpeechRecognition || window.webkitSpeechRecognition;
+
+        if (typeof SpeechRecognition !== "undefined") {
+
+          const recognition = new SpeechRecognition();
+
+
+          const stop = () => {
+
+            main.classList.remove("speaking");
+
+            recognition.stop();
+
+            button.textContent = "Start listening";
+
+          };
+
+          // Create problem to solve
+
+          // generate a set of four nonzero integers in a list such that x will always be an integer
+
+          x = Math.ceil(Math.random() * 12);
+
+          multiplier = Math.ceil(Math.random() * 12);
+
+          adder = Math.ceil(Math.random() * 20) -10;
+
+          res = x * multiplier + adder;
+
+          sign = "+"
+
+          if (adder < 0){
+
+              sign = "-";
+
+              adder = adder * -1;
+
+          }
+
+
+          // set string that will display
+
+          prob_str = "\\[" + multiplier.toString() + "x" + sign + adder.toString() + "=" + res.toString() + "\\]";
+
+          
+
+          const start = () => {
+              timeInMs = Date.now();
+
+            main.classList.add("speaking");
+
+            recognition.start();
+
+            button.textContent = "End Transcription";
+
+            // display problem
+
+            document.getElementById("problems").innerHTML = prob_str;
+
+            MathJax.typeset()
+
+          };
+
+          const onResult = event => {
+
+            math.innerHTML = "";
+
+            result.innerHTML = "";
+
+            for (const res of event.results) {
+
+              const text = document.createTextNode(res[0].transcript);
+
+              console.log(res[0].transcript);
+
+              const p = document.createElement("p");
+
+              if (res.isFinal) {
+
+                p.classList.add("final");
+
+              }
+
+              p.appendChild(text);
+
+              result.appendChild(p);
+
+              
+
+            }
+
+            
+
+            // copy result string
+
+            math_str = document.getElementById("result").textContent;
+
+            // run through list of words. If it is authorized, it gets pased to a new list
+
+            math_split = math_str.split(" ");
+
+            //turns everything to lower case for better transcription
+
+            for (i = 0; i < math_split.length; i ++){
+
+              math_split [i] = math_split [i].toLowerCase();
+
+            }  
+
+            math_list = ["\\[{"];
+
+            // next two loops could not be merged because onResult was being triggered faster than loop operated, repating phrases uncessesarily
+
+            // multivariable going to have to adjust for no solution and infinite solutions
+
+            for (i = 0; i < math_split.length; i ++){
+
+              if (math_split [i].includes("1") || 
+
+                  math_split [i].includes("2") ||
+
+                  math_split [i].includes("3") ||
+
+                  math_split [i].includes("4") ||
+
+                  math_split [i].includes("5") ||
+
+                  math_split [i].includes("6") ||
+
+                  math_split [i].includes("7") ||
+
+                  math_split [i].includes("8") ||
+
+                  math_split [i].includes("9") ||
+
+                  math_split [i].includes("0") ||
+
+                  math_split [i].includes("to") ||
+
+                  math_split [i] === "+" || 
+
+                  math_split [i] === "-" || 
+
+                  math_split [i] === "*" || 
+
+                  math_split [i] === "/" || 
+
+                  math_split [i] === "(" ||
+
+                  math_split [i] === ")" ||
+
+                  math_split [i] === "x" ||
+
+                  math_split [i] === "y" ||
+
+                  math_split [i] === "z" ||
+
+                  math_split [i] === "a" ||
+
+                  math_split [i] === "b" ||
+
+                  math_split [i] === "c" ||
+
+                  math_split [i] === "integral" ||
+
+                  math_split [i] === "plus" ||
+
+                  math_split [i] === "minus" ||
+
+                  math_split [i] === "divided" ||
+
+                  math_split [i] === "negative" ||
+
+                  math_split [i] === "power" ||
+
+                  math_split [i] === "over" ||
+
+                  math_split [i] === "equals" ||
+
+                  math_split [i] === "equal" ||
+
+                  math_split [i] === "is" ||
+
+                  math_split [i] === "root" ||
+
+                  math_split [i] === "squared" ||
+
+                  math_split [i] === "exponent" ||
+
+                  math_split [i] === "cubed" ||
+
+                  math_split [i] === "u" ||
+
+                  math_split [i] === "line" ||
+
+                  math_split [i] === "break" ||
+
+                  math_split [i] === "square"){
+
+                math_list.push(math_split[i]);
+
+              }
+
+            }
+
+            // if word is special, then add new code
+
+            for (i = 0; i < math_list.length; i ++){
+
+             if (math_list [i] === "equals" || math_list [i] === "equal" || math_list [i] === "is"){
+
+                math_list [i] = "}={";
+
+                if (math_list [i-1] === "x" && math_list [i+1] === x.toString()){
+
+                    document.getElementById("correct").innerHTML = "CORRECT!";
+                    document.getElementById("time").innerHTML = Date.now() - timeInMs;
+
+                }
+
+                continue;
+
+              }
+
+              if (math_list [i] === "to"){
+
+                math_list [i] = "2";
+
+                continue;
+
+              }
+
+              if (math_list [i] === "plus"){
+
+                if (math_list [i+1] === "minus" || math_list [i+1] === "-"){
+
+                  math_list [i] = "\\pm";
+
+                  math_list [i+1] = "";
+
+                }
+
+                else{
+
+                  math_list [i] = "+";
+
+                }
+
+                continue;
+
+              }
+
+              if (math_list [i] === "negative" || math_list [i] === "minus" ){
+
+                math_list [i] = "-";
+
+                continue;
+
+              }
+
+              if (math_list [i] === "squared"){
+
+                math_list [i] = "^2";
+
+                continue;
+
+              }
+
+              if (math_list [i] === "cubed"){
+
+                math_list [i] = "^3";
+
+                continue;
+
+              }
+
+              // I have no idea why by "divided" produces a different result than "over", should be the same.
+
+              if (math_list [i] === "root"){
+
+                
+
+                math_list [i] = "\\sqrt{";
+
+                
+
+                for (j = i; j < math_list.length; j ++){
+
+                  if (math_list [j].includes( "over") || math_list [j] === "=" || math_list [i].includes( "divided") || math_list [i] === "/"){
+
+                    math_list[j -1] = math_list[j -1]  + "}";
+
+                    break;
+
+                  }
+
+                  if (j == math_list.length - 1){
+
+                    math_list[j] =  math_list [j] + "}"
+
+                  }
+
+                }
+
+                continue;
+
+              }
+
+              if (math_list [i] === "over" || math_list [i] === "divided" || math_list [i] === "/"){
+
+                math_list [i] = "\\over{}";
+
+                continue;
+
+              }
+
+              if (math_list [i] === "square"){
+
+                math_list [i] = "";
+
+                continue;
+
+              }
+
+              if (math_list [i] === "power" || math_list [i] === "exponent"){
+
+                math_list [i] = "^";
+
+                continue;
+
+              }
+
+              if (math_list [i] === "integral"){
+
+                math_list [i] = "\\int";
+
+                continue;
+
+              }
+
+              if (math_list [i] === "line" || math_list [i] === "break"){
+
+                math_list [i] = "}\\]\\[{";
+
+                continue;
+
+              }
+
+            }
+
+            math_list.push("}\\]");
+
+            // print the math above other result
+
+            // If they've got the right answer, trigger stop and notification that answer was correct
+
+            math_str = math_list.toString();
+
+            math_str = math_str.replace(/,/g , " ")
+
+            document.getElementById("math").innerHTML = math_str;
+
+            //for debugging
+
+            console.log(math_list);
+
+            MathJax.typeset()
+
+          };
+
+          recognition.continuous = true;
+
+          recognition.interimResults = true;
+
+          recognition.addEventListener("math", onResult);
+
+          recognition.addEventListener("result", onResult);
+
+          button.addEventListener("click", event => {
+
+            listening ? stop() : start();
+
+            listening = !listening;
+
+          });
+
+        } else {
+
+          button.remove();
+
+          const message = document.getElementById("message");
+
+          message.removeAttribute("hidden");
+
+          message.setAttribute("aria-hidden", "false");
+
+        }
+
+      });
+
+    </script>
+
+  </body>
+
+</html>

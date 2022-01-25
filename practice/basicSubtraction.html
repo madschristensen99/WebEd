@@ -1,0 +1,524 @@
+<link rel="stylesheet" href="../twilio.css" />
+
+
+
+<h1>Basic Subtraction Practice</h1><br>
+
+<div id="problems"></div>
+
+<main>
+
+<button id="button">Begin!</button>
+
+<div id="math"></div>
+
+<div id="result"></div>
+
+<p id="message" hidden aria-hidden="true">
+
+  Your browser doesn't support Speech Recognition. We recommend Chrome for Desktop or Android
+
+</p>
+
+</main>
+
+<script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+
+<script id="MathJax-script"
+
+        src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js">
+
+</script>
+
+
+
+<script>
+
+    window.addEventListener("DOMContentLoaded", () => {
+
+      const button = document.getElementById("button");
+
+      const math = document.getElementById("math");
+
+      const problems = document.getElementById("problems");
+
+      const result = document.getElementById("result");
+
+      const main = document.getElementsByTagName("main")[0];
+
+      let listening = false;
+
+      const SpeechRecognition =
+
+        window.SpeechRecognition || window.webkitSpeechRecognition;
+
+      if (typeof SpeechRecognition !== "undefined") {
+
+        const recognition = new SpeechRecognition();
+
+
+        const stop = () => {
+
+          main.classList.remove("speaking");
+
+          recognition.stop();
+
+          button.textContent = "Start listening";
+
+        };
+
+        // Index for tracking what problem they are on
+
+        curIndex = 0;
+
+        //create array for numbers
+
+        arr = [
+
+            "1 - 1 = ",
+
+            "2 - 1 = ",
+
+            "2 - 2 = ",
+
+            "3 - 1 = ",
+
+            "3 - 2 = ",
+
+            "3 - 3 = ",
+
+            "4 - 1 = ",
+
+            "4 - 2 = ",
+
+            "4 - 3 = ",
+
+            "4 - 4 = ",
+
+            "5 - 1 = ",
+
+            "5 - 2 = ",
+
+            "5 - 3 = ",
+
+            "5 - 4 = ",
+
+            "5 - 5 = ",
+
+            "6 - 1 = ",
+
+            "6 - 2 = ",
+
+            "6 - 3 = ",
+
+            "6 - 4 = ",
+
+            "6 - 5 = ",
+
+            "6 - 6 = ",
+
+            "7 - 1 = ",
+
+            "7 - 2 = ",
+
+            "7 - 3 = ",
+
+            "7 - 4 = ",
+
+            "7 - 5 = ",
+
+            "7 - 6 = ",
+
+            "7 - 7 = ",
+
+            "8 - 1 = ",
+
+            "8 - 2 = ",
+
+            "8 - 3 = ",
+
+            "8 - 4 = ",
+
+            "8 - 5 = ",
+
+            "8 - 6 = ",
+
+            "8 - 7 = ",
+
+            "8 - 8 = ",
+
+            "9 - 1 = ",
+
+            "9 - 2 = ",
+
+            "9 - 3 = ",
+
+            "9 - 4 = ",
+
+            "9 - 5 = ",
+
+            "9 - 6 = ",
+
+            "9 - 7 = ",
+
+            "9 - 8 = ",
+
+            "9 - 9 = ",
+
+            "10 - 1 = ",
+
+            "10 - 2 = ",
+
+            "10 - 3 = ",
+
+            "10 - 4 = ",
+
+            "10 - 5 = ",
+
+            "10 - 6 = ",
+
+            "10 - 7 = ",
+
+            "10 - 8 = ",
+
+            "10 - 9 = ",
+
+            "10 - 10 = ",
+
+            "11 - 1 = ",
+
+            "11 - 2 = ",
+
+            "11 - 3 = ",
+
+            "11 - 4 = ",
+
+            "11 - 5 = ",
+
+            "11 - 6 = ",
+
+            "11 - 7 = ",
+
+            "11 - 8 = ",
+
+            "11 - 9 = ",
+
+            "11 - 10 = ",
+
+            "11 - 11 = ",
+
+            "12 - 1 = ",
+
+            "12 - 2 = ",
+
+            "12 - 3 = ",
+
+            "12 - 4 = ",
+
+            "12 - 5 = ",
+
+            "12 - 6 = ",
+
+            "12 - 7 = ",
+
+            "12 - 8 = ",
+
+            "12 - 9 = ",
+
+            "12 - 10 = ",
+
+            "12 - 11 = ",
+
+            "12 - 12 = "
+
+        ];
+
+        // randomize order
+
+        function shuffle(array) {
+
+            array.sort(() => Math.random() - 0.5);
+
+        }
+
+        shuffle(arr);
+
+        answerArr = [];
+
+        // evaluate array
+
+        for(i = 0; i < 77; i ++){
+
+          // grab and isolate the numbers out of it
+
+          str1 = arr[i].substring (0, 2);
+
+          str2 = arr[i].substring (arr [i].length - 5, arr [i].length - 3);
+
+          // turn string numbers into numbers and calculate, populating new array
+
+          str1 = str1.trim()
+
+          str2 = str2.trim()
+
+          answerArr.push(parseInt(str1, 10) - parseInt(str2, 10));
+
+        }
+
+        // reorder answer array to have answers in order of going down.
+
+        console.log(answerArr)
+
+        const start = () => {
+
+
+          main.classList.add("speaking");
+
+          recognition.start();
+
+          button.textContent = "Stop";
+
+          // put onto page
+
+          /* If you wanted to do a table
+
+          problem_str = "<table><tr>"
+
+
+          for (i = 1; i < 145; i ++){
+
+            problem_str += "<td>\\(" + arr[i-1] + "\\)</td>";
+
+            if (i % 12 == 0){
+
+                problem_str += "</tr><tr>"
+
+            }
+
+          }
+
+          problem_str += "</tr></table>";
+
+          */
+
+          document.getElementById("problems").innerHTML = "\\[" + arr[curIndex] + "\\]";
+
+          MathJax.typeset()
+
+        };
+
+
+
+        const onResult = event => {
+
+          math.innerHTML = "";
+
+          result.innerHTML = "";
+
+          for (const res of event.results) {
+
+            const text = document.createTextNode(res[0].transcript);
+
+            console.log(res[0].transcript);
+
+            const p = document.createElement("p");
+
+            if (res.isFinal) {
+
+              p.classList.add("final");
+
+            }
+
+            p.appendChild(text);
+
+            result.appendChild(p);
+
+            
+
+          }
+
+          
+
+
+          // copy result string
+
+          math_str = document.getElementById("result").textContent;
+
+          // run through list of words. If it is authorized, it gets passed to a new list
+
+          math_split = math_str.split(" ");
+
+          //gets most recent word
+
+          cur_word = math_split [math_split.length ]
+
+          math_list = ["\\("];
+
+          // next two loops could not be merged because onResult was being triggered faster than loop operated, repating phrases uncessesarily
+
+          for (i = 0; i < math_split.length; i ++){
+
+            if (math_split [i].includes("1") || 
+
+                math_split [i].includes("2") ||
+
+                math_split [i].includes("3") ||
+
+                math_split [i].includes("4") ||
+
+                math_split [i].includes("5") ||
+
+                math_split [i].includes("6") ||
+
+                math_split [i].includes("7") ||
+
+                math_split [i].includes("8") ||
+
+                math_split [i].includes("9") ||
+
+                math_split [i].includes("0") ||
+
+                math_split [i] === "one" ||
+
+                math_split [i] === "two" ||
+
+                math_split [i] === "three" ||
+
+                math_split [i] === "four" ||
+
+                math_split [i] === "five" ||
+
+                math_split [i] === "six" ||
+
+                math_split [i] === "seven" ||
+
+                math_split [i] === "eight" ||
+
+                math_split [i] === "nine"){
+
+              math_list.push(math_split[i]);
+
+            }
+
+          }
+
+          for (i = 0; i < math_list.length; i ++){
+
+            if(math_list [i] === "one"){
+
+              math_list [i] = "1";
+
+            }
+
+            if(math_list [i] === "two"){
+
+              math_list [i] = "2";
+
+            }
+
+            if(math_list [i] === "three"){
+
+              math_list [i] = "3";
+
+            }
+
+            if(math_list [i] === "four"){
+
+              math_list [i] = "4";
+
+            }
+
+            if(math_list [i] === "five"){
+
+              math_list [i] = "5";
+
+            }
+
+            if(math_list [i] === "six"){
+
+              math_list [i] = "6";
+
+            }
+
+            if(math_list [i] === "seven"){
+
+              math_list [i] = "7";
+
+            }
+
+            if(math_list [i] === "eight"){
+
+              math_list [i] = "8";
+
+            }
+
+            if(math_list [i] === "nine"){
+
+              math_list [i] = "9";
+
+            }
+
+
+          }
+
+          math_list.push("\\)");
+
+          // print the math above other result
+
+          math_str = math_list[math_list.length - 2];
+
+          document.getElementById("math").innerHTML = math_str;
+
+          document.getElementById("problems").innerHTML = "\\[" + arr[curIndex] + "\\]";
+
+          // If the answer is correct, the next problem is put up there
+
+          if (math_str.includes(answerArr[curIndex].toString())){
+
+            curIndex ++;
+
+          }
+
+          //for debugging
+
+          console.log(math_list);
+
+          console.log (math_str);
+
+          // resets so that math is in latex, does slow the program down a bit though
+
+          MathJax.typeset()
+
+        };
+
+        recognition.continuous = true;
+
+        recognition.interimResults = true;
+
+        recognition.addEventListener("math", onResult);
+
+        recognition.addEventListener("result", onResult);
+
+        button.addEventListener("click", event => {
+
+          listening ? stop() : start();
+
+          listening = !listening;
+
+        });
+
+      } else {
+
+        button.remove();
+
+        const message = document.getElementById("message");
+
+        message.removeAttribute("hidden");
+
+        message.setAttribute("aria-hidden", "false");
+
+      }
+
+    });
+
+  </script>

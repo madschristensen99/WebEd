@@ -1,0 +1,223 @@
+<!DOCTYPE html>
+
+<html lang="en">
+
+  <head>
+
+    <meta charset="UTF-8" />
+
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+
+    <link rel="stylesheet" href="../twilio.css" />
+
+    </head>
+
+  <body>
+
+    <h1>Bivariable Algebra Practice in progress</h1><br>
+
+    <div id="problems"></div>
+
+    <div id="math"></div>
+
+    <div id="answer"></div>
+
+    <div id="correct"></div>
+
+    <main>
+
+      <br><br>
+
+      <button id="button">Begin</button>
+
+      <div id="result"></div>
+
+      <p id="message" hidden aria-hidden="true">
+
+        Your browser doesn't support Speech Recognition. We recommend Chrome for Desktop or Android
+
+      </p>
+
+    </main>
+
+
+    
+
+    <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+
+    <script id="MathJax-script"
+
+            src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js">
+
+    </script>
+
+
+      
+
+      <script>
+
+      window.addEventListener("DOMContentLoaded", () => {
+
+        const button = document.getElementById("button");
+
+        const math = document.getElementById("math");
+
+        const result = document.getElementById("result");
+
+        const main = document.getElementsByTagName("main")[0];
+
+        let listening = false;
+
+        const SpeechRecognition =
+
+          window.SpeechRecognition || window.webkitSpeechRecognition;
+
+        if (typeof SpeechRecognition !== "undefined") {
+
+          const recognition = new SpeechRecognition();
+
+
+          const stop = () => {
+
+            main.classList.remove("speaking");
+
+            recognition.stop();
+
+            button.textContent = "Start listening";
+
+          };
+
+          // Create problem to solve
+
+          // generate a set of four nonzero integers in a list such that x will always be an integer
+
+          x = Math.ceil(Math.random() * 12);
+
+          y = Math.ceil(Math.random() * 12);
+
+          x_multiplier1 = Math.ceil(Math.random() * 12);
+
+          y_multiplier1 = Math.ceil(Math.random() * 12);
+
+          res1 = x * x_multiplier1 + y * y_multiplier1;
+
+          x_multiplier2 = Math.ceil(Math.random() * 12);
+
+          y_multiplier2 = Math.ceil(Math.random() * 12);
+
+          res2 = x * x_multiplier2 + y * y_multiplier2;
+
+
+          // set string that will display
+
+          prob_str1 = "\\[" + x_multiplier1.toString() + "x +" + y_multiplier1.toString() + "y"  + "=" + res1.toString() + "\\]";
+
+          prob_str2 = "\\[" + x_multiplier2.toString() + "x +" + y_multiplier2.toString() + "y"  + "=" + res2.toString() + "\\]";
+
+          console.log(x, y);
+
+          
+
+          const start = () => {
+
+            main.classList.add("speaking");
+
+            recognition.start();
+
+            button.textContent = "End Transcription";
+
+            // display problem
+
+            document.getElementById("problems").innerHTML = prob_str1 + "" + prob_str2;
+
+            document.getElementById("answer").innerHTML = "\\[x = y =\\]";
+
+            MathJax.typeset()
+
+          };
+
+          const onResult = event => {
+
+            math.innerHTML = "";
+
+            result.innerHTML = "";
+
+            for (const res of event.results) {
+
+              const text = document.createTextNode(res[0].transcript);
+
+              console.log(res[0].transcript);
+
+              const p = document.createElement("p");
+
+              if (res.isFinal) {
+
+                p.classList.add("final");
+
+              }
+
+              p.appendChild(text);
+
+              result.appendChild(p);
+
+              
+
+            }
+
+            
+
+            // copy result string
+
+            math_str = document.getElementById("result").textContent;
+
+		resultToMath(math_str, “math”);
+
+          };
+
+          recognition.continuous = true;
+
+          recognition.interimResults = true;
+
+          recognition.addEventListener("math", onResult);
+
+          recognition.addEventListener("result", onResult);
+
+          button.addEventListener("click", event => {
+
+            listening ? stop() : start();
+
+            listening = !listening;
+
+          });
+
+        } else {
+
+          button.remove();
+
+          const message = document.getElementById("message");
+
+          message.removeAttribute("hidden");
+
+          message.setAttribute("aria-hidden", "false");
+
+          var text = document.querySelector("input");
+
+          text.addEventListener("input", function() {
+
+         // turns contents to math
+
+               resultToMath(text.value, "math");
+
+          });
+
+        }
+
+      });
+
+    </script>
+
+  </body>
+
+</html>
