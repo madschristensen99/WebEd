@@ -1,0 +1,227 @@
+<!DOCTYPE html>
+aaaaaaaaaaaaaa
+<html lang="en">
+
+  <head>
+
+    <meta charset="UTF-8" />
+
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+
+    <title>Browser speech recognition</title>
+
+    <link rel="stylesheet" href="./style.css" />
+
+  </head>
+
+  <body style = "
+  
+  
+  ">
+
+    <link rel="shortcut icon" type="image/png" href="./logo.png"/>
+    <img src = "name_logo.PNG" width = "800" height = "200" >
+      <ul id="nav" style ="
+            gap:2vh;
+            display: grid;
+            grid-template-columns: repeat(7, auto);
+      
+      ">
+
+        <li><a href="practice.html">Practice</a></li>
+        
+        <li><a href="compete.html">Competition</a></li>
+
+        <li><a href="curriculum.html">Curriculum</a></li>
+
+        <li><a href="about.html">About</a></li>
+        
+        <li><a href="https://youtu.be/HiKbo7iNdEo">DemoTutorial Video</a></li>
+
+        <li><a href="https://www.youtube.com/watch?v=eC63tOA4cUU">Benefits of Alienmaths</a></li>
+
+
+      </ul>
+
+    <main>
+
+      <h1>Solve Math Problems Verbally!</h1>
+
+
+      Press on the button and allow access to your microphone to start transcribing math! <br><br>
+
+      <button id="button">Press to Start</button>
+
+      <p id="message" hidden aria-hidden="true">
+
+        Your browser doesn't support Speech Recognition. We recommend Chrome for Desktop or Android and Safari for Apple devices.
+
+
+      </p>
+
+      <div id="math"></div>
+
+      <div id="interface"></div>
+      
+    <div id="result" hidden></div>
+
+
+    </main>
+
+
+    
+
+    <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+
+    <script id="MathJax-script"
+
+            src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js">
+
+    </script>
+
+
+      <input type="text">
+
+        <script src="isNumber.js" type="text/javascript"></script> 
+
+        <script src="resultToMath.js" type="text/javascript"></script> 
+
+
+
+      <script>
+
+
+        window.addEventListener("DOMContentLoaded", () => {
+
+                const button = document.getElementById("button");
+
+                const math = document.getElementById("math");
+
+                const result = document.getElementById("result");
+
+                const main = document.getElementsByTagName("main")[0];
+
+                let listening = false;
+
+        const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+
+                if (typeof SpeechRecognition !== "undefined") {
+
+                        const recognition = new SpeechRecognition();
+
+                        const stop = () => {
+
+                                main.classList.remove("speaking");
+
+                                recognition.stop();
+
+                                button.textContent = "Press to Start";
+
+                        };
+
+                        const start = () => {
+
+                                main.classList.add("speaking");
+
+                                recognition.start();
+
+                                button.textContent = "Say some math!";
+
+                        };
+
+                        const onResult = event => {
+
+                                math.innerHTML = "";
+
+                                result.innerHTML = "";
+
+                                for (const res of event.results) {
+
+                                        const text = document.createTextNode(res[0].transcript);
+
+                                        console.log(res[0].transcript);
+
+                                        const p = document.createElement("p");
+
+                                        if (res.isFinal) {
+
+                                                p.classList.add("final");
+
+                                        }
+
+                                        p.appendChild(text);
+
+                                        result.appendChild(p);
+
+                                }
+
+                                // turns speech to math
+
+
+                                resultToMath (document.getElementById("result").textContent, "math");
+
+                        };
+
+                        recognition.continuous = true;
+
+                        recognition.interimResults = true;
+
+                        recognition.addEventListener("math", onResult);
+
+                        recognition.addEventListener("result", onResult);
+
+                        button.addEventListener("click", event => {
+
+                                listening ? stop() : start();
+
+                                listening = !listening;
+
+                        });
+
+                }
+
+                else {
+
+                        button.remove();
+
+                        const message = document.getElementById("message");
+
+                        message.removeAttribute("hidden");
+
+                        message.setAttribute("aria-hidden", "false");
+
+                        var text = document.querySelector("input");
+
+                        text.addEventListener("input", function() {
+
+                                // turns contents to math
+
+                               resultToMath(text.value, "math");
+
+                        });
+
+                }
+
+        });
+
+        function startGame() {
+                myGameArea.start();
+        }
+
+        var myGameArea = {
+                canvas : document.createElement("canvas"),
+                start : function() {
+                        this.canvas.width = 480;
+                        this.canvas.height = 270;
+                        this.context = this.canvas.getContext("2d");
+                        document.body.insertBefore(this.canvas, document.body.childNodes[0]);
+                }
+        }
+
+    </script>
+
+  </body>
+
+</html>
